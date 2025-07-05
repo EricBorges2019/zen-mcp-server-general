@@ -76,6 +76,9 @@ from tools import (  # noqa: E402
     RefactorTool,
     SecauditTool,
     TestGenTool,
+    TextAnalyzeTool,
+    TextRefactorTool,
+    TextReviewTool,
     ThinkDeepTool,
     TracerTool,
     VersionTool,
@@ -274,6 +277,9 @@ TOOLS = {
     "docgen": DocgenTool(),  # Step-by-step documentation generation with complexity analysis
     "analyze": AnalyzeTool(),  # General-purpose file and code analysis
     "refactor": RefactorTool(),  # Step-by-step refactoring analysis workflow with expert validation
+    "textanalyze": TextAnalyzeTool(),  # Step-by-step text document analysis workflow
+    "textreview": TextReviewTool(),  # Comprehensive step-by-step text review workflow
+    "textrefactor": TextRefactorTool(),  # Step-by-step text refactoring workflow
     "tracer": TracerTool(),  # Static call path prediction and control flow analysis
     "testgen": TestGenTool(),  # Step-by-step test generation workflow with expert validation
     "challenge": ChallengeTool(),  # Critical challenge prompt wrapper to avoid automatic agreement
@@ -348,6 +354,21 @@ PROMPT_TEMPLATES = {
         "name": "testgen",
         "description": "Generate comprehensive tests",
         "template": "Generate comprehensive tests with {model}",
+    },
+    "textanalyze": {
+        "name": "textanalyze",
+        "description": "Analyze text documents for structure, themes, and arguments",
+        "template": "Analyze this text document with {model}",
+    },
+    "textreview": {
+        "name": "textreview",
+        "description": "Review text documents for quality and improvements",
+        "template": "Review this text document with {model}",
+    },
+    "textrefactor": {
+        "name": "textrefactor",
+        "description": "Refactor text documents for better organization and clarity",
+        "template": "Refactor this text document with {model}",
     },
     "challenge": {
         "name": "challenge",

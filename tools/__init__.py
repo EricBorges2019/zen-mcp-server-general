@@ -15,6 +15,9 @@ from .precommit import PrecommitTool
 from .refactor import RefactorTool
 from .secaudit import SecauditTool
 from .testgen import TestGenTool
+from .textanalyze import TextAnalyzeTool
+from .textrefactor import TextRefactorTool
+from .textreview import TextReviewTool
 from .thinkdeep import ThinkDeepTool
 from .tracer import TracerTool
 from .version import VersionTool
@@ -34,6 +37,9 @@ __all__ = [
     "RefactorTool",
     "SecauditTool",
     "TestGenTool",
+    "TextAnalyzeTool",
+    "TextRefactorTool",
+    "TextReviewTool",
     "TracerTool",
     "VersionTool",
 ]

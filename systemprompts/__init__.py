@@ -13,6 +13,9 @@ from .precommit_prompt import PRECOMMIT_PROMPT
 from .refactor_prompt import REFACTOR_PROMPT
 from .secaudit_prompt import SECAUDIT_PROMPT
 from .testgen_prompt import TESTGEN_PROMPT
+from .text_analyze_prompt import TEXT_ANALYZE_PROMPT
+from .text_refactor_prompt import TEXT_REFACTOR_PROMPT
+from .text_review_prompt import TEXT_REVIEW_PROMPT
 from .thinkdeep_prompt import THINKDEEP_PROMPT
 from .tracer_prompt import TRACER_PROMPT
 
@@ -29,5 +32,8 @@ __all__ = [
     "REFACTOR_PROMPT",
     "SECAUDIT_PROMPT",
     "TESTGEN_PROMPT",
+    "TEXT_ANALYZE_PROMPT",
+    "TEXT_REFACTOR_PROMPT",
+    "TEXT_REVIEW_PROMPT",
     "TRACER_PROMPT",
 ]
