@@ -8,7 +8,7 @@ The tool supports complex refactoring scenarios including content reorganization
 argument strengthening, and style consistency improvements.
 
 Key features:
-- Step-by-step document refactoring workflow with progress tracking  
+- Step-by-step document refactoring workflow with progress tracking
 - Context-aware file embedding for text documents (markdown, txt, etc.)
 - Automatic improvement opportunity tracking with categorization
 - Expert analysis integration with external models for collaborative text restructuring
@@ -154,6 +154,10 @@ class TextRefactorTool(WorkflowTool):
     def get_request_model(self):
         return TextRefactorRequest
 
+    def get_workflow_request_model(self) -> type:
+        """Return the request model class for this workflow tool."""
+        return TextRefactorRequest
+
     @property
     def model_category(self) -> "ToolModelCategory":
         """Text refactoring works well with reasoning and creative models"""
@@ -186,11 +190,20 @@ class TextRefactorTool(WorkflowTool):
 
         return False
 
-    def get_required_actions(self, request: TextRefactorRequest) -> list[str]:
+    def get_work_steps(self, request: TextRefactorRequest) -> list[str]:
+        """Define work steps for text refactoring workflow."""
+        return [
+            "Document structure and organization analysis",
+            "Content flow and clarity assessment",
+            "Style and consistency evaluation",
+            "Comprehensive refactoring recommendations"
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
         """Generate step-specific investigation actions for text refactoring."""
         actions = []
 
-        if request.step_number == 1:
+        if step_number == 1:
             actions.extend([
                 "Use Read tool to examine the text document(s) specified in relevant_files",
                 "Analyze document organization and structure patterns",
@@ -207,9 +220,11 @@ class TextRefactorTool(WorkflowTool):
 
         return actions
 
-    def should_call_expert_analysis(self, request: TextRefactorRequest) -> bool:
+    def should_call_expert_analysis(self, consolidated_findings, request=None) -> bool:
         """Determine if expert analysis should be called based on confidence level."""
-        return request.confidence != "complete"
+        if request:
+            return request.confidence != "complete"
+        return True
 
     def prepare_expert_analysis_context(self, request: TextRefactorRequest) -> str:
         """Prepare context for expert analysis of text refactoring findings."""

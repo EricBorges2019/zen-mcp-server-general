@@ -156,6 +156,10 @@ class TextAnalyzeTool(WorkflowTool):
     def get_request_model(self):
         return TextAnalyzeRequest
 
+    def get_workflow_request_model(self) -> type:
+        """Return the request model class for this workflow tool."""
+        return TextAnalyzeRequest
+
     @property
     def model_category(self) -> "ToolModelCategory":
         """Text analysis works well with reasoning and analytical models"""
@@ -183,11 +187,20 @@ class TextAnalyzeTool(WorkflowTool):
 
         return False
 
-    def get_required_actions(self, request: TextAnalyzeRequest) -> list[str]:
+    def get_work_steps(self, request: TextAnalyzeRequest) -> list[str]:
+        """Define work steps for text analysis workflow."""
+        return [
+            "Document structure and content analysis",
+            "Theme and argument identification",
+            "Style and readability assessment",
+            "Comprehensive findings consolidation"
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
         """Generate step-specific investigation actions for text analysis."""
         actions = []
 
-        if request.step_number == 1:
+        if step_number == 1:
             actions.extend([
                 "Use Read tool to examine the text document(s) specified in relevant_files",
                 "Understand the document structure and main content areas",
@@ -204,9 +217,11 @@ class TextAnalyzeTool(WorkflowTool):
 
         return actions
 
-    def should_call_expert_analysis(self, request: TextAnalyzeRequest) -> bool:
+    def should_call_expert_analysis(self, consolidated_findings, request=None) -> bool:
         """Determine if expert analysis should be called based on confidence level."""
-        return request.confidence != "certain"
+        if request:
+            return request.confidence != "certain"
+        return True
 
     def prepare_expert_analysis_context(self, request: TextAnalyzeRequest) -> str:
         """Prepare context for expert analysis of text analysis findings."""

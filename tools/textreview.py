@@ -156,6 +156,10 @@ class TextReviewTool(WorkflowTool):
     def get_request_model(self):
         return TextReviewRequest
 
+    def get_workflow_request_model(self) -> type:
+        """Return the request model class for this workflow tool."""
+        return TextReviewRequest
+
     @property
     def model_category(self) -> "ToolModelCategory":
         """Text review works well with reasoning and analytical models"""
@@ -183,11 +187,20 @@ class TextReviewTool(WorkflowTool):
 
         return False
 
-    def get_required_actions(self, request: TextReviewRequest) -> list[str]:
+    def get_work_steps(self, request: TextReviewRequest) -> list[str]:
+        """Define work steps for text review workflow."""
+        return [
+            "Document quality and structure assessment",
+            "Content accuracy and argument evaluation",
+            "Clarity and readability analysis",
+            "Comprehensive review recommendations"
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
         """Generate step-specific investigation actions for text review."""
         actions = []
 
-        if request.step_number == 1:
+        if step_number == 1:
             actions.extend([
                 "Use Read tool to examine the text document(s) specified in relevant_files",
                 "Assess overall document quality and structure",
@@ -204,9 +217,11 @@ class TextReviewTool(WorkflowTool):
 
         return actions
 
-    def should_call_expert_analysis(self, request: TextReviewRequest) -> bool:
+    def should_call_expert_analysis(self, consolidated_findings, request=None) -> bool:
         """Determine if expert analysis should be called based on confidence level."""
-        return request.confidence != "certain"
+        if request:
+            return request.confidence != "certain"
+        return True
 
     def prepare_expert_analysis_context(self, request: TextReviewRequest) -> str:
         """Prepare context for expert analysis of text review findings."""
