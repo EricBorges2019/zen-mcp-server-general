@@ -69,12 +69,8 @@ TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS = {
         "List of text issues identified during the investigation. Each issue should be a dictionary with 'severity' (critical, high, medium, low) and 'description' fields. "
         "Include unclear passages, weak arguments, structural problems, style inconsistencies, factual concerns, readability issues, etc."
     ),
-    "review_type": (
-        "Type of review to perform (comprehensive, content, structure, clarity, style)"
-    ),
-    "standards": (
-        "Writing standards or style guide to enforce during the review"
-    ),
+    "review_type": ("Type of review to perform (comprehensive, content, structure, clarity, style)"),
+    "standards": ("Writing standards or style guide to enforce during the review"),
 }
 
 
@@ -88,10 +84,19 @@ class TextReviewRequest(WorkflowRequest):
     findings: str = Field(..., description=TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS["findings"])
 
     # Review tracking fields
-    files_checked: Optional[list[str]] = Field(default_factory=list, description="List all files (as absolute paths, do not clip or shrink file names) examined during the text review investigation so far.")
-    relevant_files: Optional[list[str]] = Field(default_factory=list, description=TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"])
-    relevant_context: Optional[list[str]] = Field(default_factory=list, description="Key themes/sections identified as central to the review")
-    issues_found: Optional[list[dict[str, Any]]] = Field(default_factory=list, description=TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"])
+    files_checked: Optional[list[str]] = Field(
+        default_factory=list,
+        description="List all files (as absolute paths, do not clip or shrink file names) examined during the text review investigation so far.",
+    )
+    relevant_files: Optional[list[str]] = Field(
+        default_factory=list, description=TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"]
+    )
+    relevant_context: Optional[list[str]] = Field(
+        default_factory=list, description="Key themes/sections identified as central to the review"
+    )
+    issues_found: Optional[list[dict[str, Any]]] = Field(
+        default_factory=list, description=TEXT_REVIEW_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"]
+    )
 
     # Review configuration
     review_type: Literal["comprehensive", "content", "structure", "clarity", "style"] = Field(
@@ -187,6 +192,7 @@ class TextReviewTool(WorkflowTool):
 
         return False
 
+<<<<<<< Updated upstream
     def get_work_steps(self, request: TextReviewRequest) -> list[str]:
         """Define work steps for text review workflow."""
         return [
@@ -197,6 +203,10 @@ class TextReviewTool(WorkflowTool):
         ]
 
     def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+=======
+<<<<<<< Updated upstream
+    def get_required_actions(self, request: TextReviewRequest) -> list[str]:
+>>>>>>> Stashed changes
         """Generate step-specific investigation actions for text review."""
         actions = []
 
@@ -207,13 +217,39 @@ class TextReviewTool(WorkflowTool):
                 "Identify potential issues and improvement opportunities",
                 "Evaluate argument strength and clarity"
             ])
+=======
+    def get_work_steps(self, request: TextReviewRequest) -> list[str]:
+        """Define work steps for text review workflow."""
+        return [
+            "Document quality and structure assessment",
+            "Content accuracy and argument evaluation",
+            "Clarity and readability analysis",
+            "Comprehensive review recommendations",
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+        """Generate step-specific investigation actions for text review."""
+        actions = []
+
+        if step_number == 1:
+            actions.extend(
+                [
+                    "Use Read tool to examine the text document(s) specified in relevant_files",
+                    "Assess overall document quality and structure",
+                    "Identify potential issues and improvement opportunities",
+                    "Evaluate argument strength and clarity",
+                ]
+            )
+>>>>>>> Stashed changes
         else:
-            actions.extend([
-                "Continue investigating specific quality aspects identified in previous steps",
-                "Use Read tool to examine problem areas or related sections",
-                "Gather concrete evidence for review assessments",
-                "Build comprehensive quality evaluation"
-            ])
+            actions.extend(
+                [
+                    "Continue investigating specific quality aspects identified in previous steps",
+                    "Use Read tool to examine problem areas or related sections",
+                    "Gather concrete evidence for review assessments",
+                    "Build comprehensive quality evaluation",
+                ]
+            )
 
         return actions
 
@@ -235,11 +271,13 @@ class TextReviewTool(WorkflowTool):
         ]
 
         if request.issues_found:
-            context_parts.extend([
-                "",
-                "ISSUES IDENTIFIED:",
-                *[f"- {issue}" for issue in request.issues_found],
-            ])
+            context_parts.extend(
+                [
+                    "",
+                    "ISSUES IDENTIFIED:",
+                    *[f"- {issue}" for issue in request.issues_found],
+                ]
+            )
 
         return "\n".join(context_parts)
 

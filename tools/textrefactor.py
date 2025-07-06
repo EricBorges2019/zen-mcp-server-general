@@ -67,9 +67,7 @@ TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS = {
         "'type' (organization, clarity, arguments, style, flow), and 'description' fields. Include organizational issues, clarity problems, "
         "argument weaknesses, flow disruptions, style inconsistencies, etc."
     ),
-    "refactor_type": (
-        "Type of refactoring analysis to perform (organization, clarity, arguments, style, flow)"
-    ),
+    "refactor_type": ("Type of refactoring analysis to perform (organization, clarity, arguments, style, flow)"),
 }
 
 
@@ -83,17 +81,27 @@ class TextRefactorRequest(WorkflowRequest):
     findings: str = Field(..., description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["findings"])
 
     # Refactoring tracking fields
-    files_checked: Optional[list[str]] = Field(default_factory=list, description="List all files (as absolute paths, do not clip or shrink file names) examined during the text refactoring investigation so far.")
-    relevant_files: Optional[list[str]] = Field(default_factory=list, description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"])
-    relevant_context: Optional[list[str]] = Field(default_factory=list, description="Key sections/themes identified as central to the refactoring")
-    issues_found: Optional[list[dict[str, Any]]] = Field(default_factory=list, description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"])
+    files_checked: Optional[list[str]] = Field(
+        default_factory=list,
+        description="List all files (as absolute paths, do not clip or shrink file names) examined during the text refactoring investigation so far.",
+    )
+    relevant_files: Optional[list[str]] = Field(
+        default_factory=list, description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"]
+    )
+    relevant_context: Optional[list[str]] = Field(
+        default_factory=list, description="Key sections/themes identified as central to the refactoring"
+    )
+    issues_found: Optional[list[dict[str, Any]]] = Field(
+        default_factory=list, description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"]
+    )
 
     # Refactoring configuration
     refactor_type: Literal["organization", "clarity", "arguments", "style", "flow"] = Field(
         default="organization", description=TEXT_REFACTOR_WORKFLOW_FIELD_DESCRIPTIONS["refactor_type"]
     )
     focus_areas: Optional[list[str]] = Field(
-        default_factory=list, description="Specific areas to focus on (e.g., 'introduction', 'conclusion', 'main arguments', 'transitions')"
+        default_factory=list,
+        description="Specific areas to focus on (e.g., 'introduction', 'conclusion', 'main arguments', 'transitions')",
     )
     style_guide_examples: Optional[list[str]] = Field(
         default_factory=list,
@@ -190,6 +198,7 @@ class TextRefactorTool(WorkflowTool):
 
         return False
 
+<<<<<<< Updated upstream
     def get_work_steps(self, request: TextRefactorRequest) -> list[str]:
         """Define work steps for text refactoring workflow."""
         return [
@@ -200,6 +209,10 @@ class TextRefactorTool(WorkflowTool):
         ]
 
     def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+=======
+<<<<<<< Updated upstream
+    def get_required_actions(self, request: TextRefactorRequest) -> list[str]:
+>>>>>>> Stashed changes
         """Generate step-specific investigation actions for text refactoring."""
         actions = []
 
@@ -210,13 +223,39 @@ class TextRefactorTool(WorkflowTool):
                 "Identify areas needing refactoring and improvement",
                 "Map out potential reorganization strategies"
             ])
+=======
+    def get_work_steps(self, request: TextRefactorRequest) -> list[str]:
+        """Define work steps for text refactoring workflow."""
+        return [
+            "Document structure and organization analysis",
+            "Content flow and clarity assessment",
+            "Style and consistency evaluation",
+            "Comprehensive refactoring recommendations",
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+        """Generate step-specific investigation actions for text refactoring."""
+        actions = []
+
+        if step_number == 1:
+            actions.extend(
+                [
+                    "Use Read tool to examine the text document(s) specified in relevant_files",
+                    "Analyze document organization and structure patterns",
+                    "Identify areas needing refactoring and improvement",
+                    "Map out potential reorganization strategies",
+                ]
+            )
+>>>>>>> Stashed changes
         else:
-            actions.extend([
-                "Continue investigating specific refactoring opportunities identified in previous steps",
-                "Use Read tool to examine problematic sections or style examples",
-                "Gather concrete evidence for refactoring recommendations",
-                "Build comprehensive improvement strategy"
-            ])
+            actions.extend(
+                [
+                    "Continue investigating specific refactoring opportunities identified in previous steps",
+                    "Use Read tool to examine problematic sections or style examples",
+                    "Gather concrete evidence for refactoring recommendations",
+                    "Build comprehensive improvement strategy",
+                ]
+            )
 
         return actions
 
@@ -238,18 +277,22 @@ class TextRefactorTool(WorkflowTool):
         ]
 
         if request.issues_found:
-            context_parts.extend([
-                "",
-                "REFACTORING OPPORTUNITIES:",
-                *[f"- {issue}" for issue in request.issues_found],
-            ])
+            context_parts.extend(
+                [
+                    "",
+                    "REFACTORING OPPORTUNITIES:",
+                    *[f"- {issue}" for issue in request.issues_found],
+                ]
+            )
 
         if request.focus_areas:
-            context_parts.extend([
-                "",
-                "FOCUS AREAS:",
-                *[f"- {area}" for area in request.focus_areas],
-            ])
+            context_parts.extend(
+                [
+                    "",
+                    "FOCUS AREAS:",
+                    *[f"- {area}" for area in request.focus_areas],
+                ]
+            )
 
         return "\n".join(context_parts)
 

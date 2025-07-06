@@ -68,9 +68,7 @@ TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS = {
         "Issues or concerns identified during text analysis, each with severity level (critical, high, medium, low). Include unclear passages, "
         "weak arguments, structural problems, style inconsistencies, readability issues, etc."
     ),
-    "analysis_type": (
-        "Type of text analysis to perform (structure, themes, arguments, style, readability, general)"
-    ),
+    "analysis_type": ("Type of text analysis to perform (structure, themes, arguments, style, readability, general)"),
 }
 
 
@@ -84,10 +82,19 @@ class TextAnalyzeRequest(WorkflowRequest):
     findings: str = Field(..., description=TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS["findings"])
 
     # Analysis tracking fields
-    files_checked: Optional[list[str]] = Field(default_factory=list, description="List all files (as absolute paths, do not clip or shrink file names) examined during the text analysis investigation so far.")
-    relevant_files: Optional[list[str]] = Field(default_factory=list, description=TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"])
-    relevant_context: Optional[list[str]] = Field(default_factory=list, description="Themes/arguments identified as central to the text")
-    issues_found: Optional[list[dict[str, Any]]] = Field(default_factory=list, description=TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"])
+    files_checked: Optional[list[str]] = Field(
+        default_factory=list,
+        description="List all files (as absolute paths, do not clip or shrink file names) examined during the text analysis investigation so far.",
+    )
+    relevant_files: Optional[list[str]] = Field(
+        default_factory=list, description=TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS["relevant_files"]
+    )
+    relevant_context: Optional[list[str]] = Field(
+        default_factory=list, description="Themes/arguments identified as central to the text"
+    )
+    issues_found: Optional[list[dict[str, Any]]] = Field(
+        default_factory=list, description=TEXT_ANALYZE_WORKFLOW_FIELD_DESCRIPTIONS["issues_found"]
+    )
 
     # Analysis configuration
     analysis_type: Literal["structure", "themes", "arguments", "style", "readability", "general"] = Field(
@@ -187,6 +194,7 @@ class TextAnalyzeTool(WorkflowTool):
 
         return False
 
+<<<<<<< Updated upstream
     def get_work_steps(self, request: TextAnalyzeRequest) -> list[str]:
         """Define work steps for text analysis workflow."""
         return [
@@ -197,6 +205,10 @@ class TextAnalyzeTool(WorkflowTool):
         ]
 
     def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+=======
+<<<<<<< Updated upstream
+    def get_required_actions(self, request: TextAnalyzeRequest) -> list[str]:
+>>>>>>> Stashed changes
         """Generate step-specific investigation actions for text analysis."""
         actions = []
 
@@ -207,13 +219,39 @@ class TextAnalyzeTool(WorkflowTool):
                 "Identify key themes, arguments, and organizational patterns",
                 "Map out the text structure and content flow"
             ])
+=======
+    def get_work_steps(self, request: TextAnalyzeRequest) -> list[str]:
+        """Define work steps for text analysis workflow."""
+        return [
+            "Document structure and content analysis",
+            "Theme and argument identification",
+            "Style and readability assessment",
+            "Comprehensive findings consolidation",
+        ]
+
+    def get_required_actions(self, step_number: int, confidence: str, findings: str, total_steps: int) -> list[str]:
+        """Generate step-specific investigation actions for text analysis."""
+        actions = []
+
+        if step_number == 1:
+            actions.extend(
+                [
+                    "Use Read tool to examine the text document(s) specified in relevant_files",
+                    "Understand the document structure and main content areas",
+                    "Identify key themes, arguments, and organizational patterns",
+                    "Map out the text structure and content flow",
+                ]
+            )
+>>>>>>> Stashed changes
         else:
-            actions.extend([
-                "Continue investigating specific aspects identified in previous steps",
-                "Use Read tool to examine additional sections or related documents",
-                "Gather concrete evidence to support your analysis",
-                "Build on previous findings with new insights"
-            ])
+            actions.extend(
+                [
+                    "Continue investigating specific aspects identified in previous steps",
+                    "Use Read tool to examine additional sections or related documents",
+                    "Gather concrete evidence to support your analysis",
+                    "Build on previous findings with new insights",
+                ]
+            )
 
         return actions
 
@@ -235,18 +273,22 @@ class TextAnalyzeTool(WorkflowTool):
         ]
 
         if request.issues_found:
-            context_parts.extend([
-                "",
-                "ISSUES IDENTIFIED:",
-                *[f"- {issue}" for issue in request.issues_found],
-            ])
+            context_parts.extend(
+                [
+                    "",
+                    "ISSUES IDENTIFIED:",
+                    *[f"- {issue}" for issue in request.issues_found],
+                ]
+            )
 
         if request.relevant_context:
-            context_parts.extend([
-                "",
-                "KEY THEMES/ARGUMENTS:",
-                *[f"- {context}" for context in request.relevant_context],
-            ])
+            context_parts.extend(
+                [
+                    "",
+                    "KEY THEMES/ARGUMENTS:",
+                    *[f"- {context}" for context in request.relevant_context],
+                ]
+            )
 
         return "\n".join(context_parts)
 
